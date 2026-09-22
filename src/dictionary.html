@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>留词通读词库</title>
+    <style>
+      :root {
+        --paper: #f6f0e7;
+        --ink: #2f2822;
+        --soft: #6b6158;
+        --line: #dfd2c1;
+        --brand: #1d6f5f;
+        --warm: #8a6949;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, #efe5d8 0%, var(--paper) 52%, #f8f4ef 100%);
+        color: var(--ink);
+        font: 15px/1.5 "PingFang SC", "Noto Sans SC", sans-serif;
+      }
+
+      .page {
+        max-width: 1160px;
+        margin: 0 auto;
+        padding: 28px 20px 40px;
+      }
+
+      .hero {
+        display: grid;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 42px);
+      }
+
+      .hero p {
+        margin: 0;
+        color: var(--soft);
+        max-width: 800px;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 16px 0 24px;
+      }
+
+      .pill {
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 420px) 1fr;
+        gap: 18px;
+      }
+
+      .panel {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 18px;
+        backdrop-filter: blur(6px);
+      }
+
+      .controls {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+
+      .result-count {
+        color: var(--soft);
+        font-size: 13px;
+      }
+
+      .controls input[type="search"] {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fff;
+        font: inherit;
+      }
+
+      .list-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .list-filters label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--line);
+      }
+
+      .entry-list {
+        display: grid;
+        gap: 10px;
+        max-height: 68vh;
+        overflow: auto;
+        padding-right: 4px;
+      }
+
+      .entry-item {
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fff;
+        padding: 12px;
+        cursor: pointer;
+      }
+
+      .entry-item.active {
+        border-color: rgba(29, 111, 95, 0.5);
+        box-shadow: 0 8px 22px rgba(29, 111, 95, 0.08);
+      }
+
+      .entry-item h3 {
+        margin: 0 0 4px;
+        font-size: 18px;
+      }
+
+      .entry-item p {
+        margin: 0;
+        color: var(--soft);
+        font-size: 13px;
+      }
+
+      .detail-empty {
+        color: var(--soft);
+      }
+
+      .detail h2 {
+        margin: 0;
+        font-size: 30px;
+      }
+
+      .detail .phonetic {
+        margin-top: 6px;
+        color: var(--soft);
+      }
+
+      .detail .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 14px 0 20px;
+      }
+
+      .detail .tags span {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(29, 111, 95, 0.1);
+        color: var(--brand);
+        font-size: 13px;
+      }
+
+      .section {
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--line);
+      }
+
+      .section h3 {
+        margin: 0 0 10px;
+        color: var(--warm);
+        font-size: 15px;
+      }
+
+      .section ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .section li {
+        margin-bottom: 8px;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .entry-list {
+          max-height: 40vh;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="hero">
+        <h1>留词通读词库</h1>
+        <p>这里可以查看插件当前接入的词库、总词数，并按关键词搜索单词。点击左侧词条，可以查看详细释义、短语和例句。</p>
+      </section>
+
+      <div id="meta" class="meta"></div>
+
+      <div class="layout">
+        <aside class="panel">
+          <div class="controls">
+            <input id="search" type="search" placeholder="搜索单词或中文释义，例如 community / 社区" />
+            <div id="filters" class="list-filters"></div>
+            <div id="resultCount" class="result-count"></div>
+          </div>
+          <div id="entryList" class="entry-list"></div>
+        </aside>
+
+        <section class="panel detail" id="detailPanel">
+          <div class="detail-empty">从左边选择一个词条，就可以查看它在词库中的详细解释。</div>
+        </section>
+      </div>
+    </div>
+    <script src="dictionary.js"></script>
+  </body>
+  </html>

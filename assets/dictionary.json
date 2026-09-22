@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-09-23",
+  "entryCount": 12,
+  "stats": {"starter": 12},
+  "sources": [
+    {
+      "id": "starter",
+      "label": "项目自带开源示例词库",
+      "type": "wordlist",
+      "license": "MIT"
+    }
+  ],
+  "entries": {
+    "accessibility": {"word":"accessibility","us":"æksɛsəˈbɪləti","uk":"əksɛsəˈbɪləti","translations":[{"type":"n.","translation":"无障碍性；可访问性"}],"phrases":[{"phrase":"web accessibility","translation":"网页无障碍"}],"sentences":[],"lists":["starter"],"shortGloss":"无障碍性；可访问性"},
+    "algorithm": {"word":"algorithm","us":"ˈælɡəˌrɪðəm","uk":"ˈælɡərɪðəm","translations":[{"type":"n.","translation":"算法"}],"phrases":[{"phrase":"search algorithm","translation":"搜索算法"}],"sentences":[],"lists":["starter"],"shortGloss":"算法"},
+    "community": {"word":"community","us":"kəˈmjuːnəti","uk":"kəˈmjuːnəti","translations":[{"type":"n.","translation":"社区；群体"}],"phrases":[{"phrase":"open-source community","translation":"开源社区"}],"sentences":[],"lists":["starter"],"shortGloss":"社区；群体"},
+    "context": {"word":"context","us":"ˈkɑːntɛkst","uk":"ˈkɒntɛkst","translations":[{"type":"n.","translation":"上下文；背景"}],"phrases":[{"phrase":"in context","translation":"结合上下文"}],"sentences":[],"lists":["starter"],"shortGloss":"上下文；背景"},
+    "contribute": {"word":"contribute","us":"kənˈtrɪbjuːt","uk":"kənˈtrɪbjuːt","translations":[{"type":"v.","translation":"贡献；投稿"}],"phrases":[{"phrase":"contribute code","translation":"贡献代码"}],"sentences":[],"lists":["starter"],"shortGloss":"贡献；投稿"},
+    "extension": {"word":"extension","us":"ɪkˈstɛnʃən","uk":"ɪkˈstɛnʃən","translations":[{"type":"n.","translation":"扩展；延伸"}],"phrases":[{"phrase":"browser extension","translation":"浏览器扩展"}],"sentences":[],"lists":["starter"],"shortGloss":"扩展；延伸"},
+    "interface": {"word":"interface","us":"ˈɪntərˌfeɪs","uk":"ˈɪntəfeɪs","translations":[{"type":"n.","translation":"界面；接口"}],"phrases":[{"phrase":"user interface","translation":"用户界面"}],"sentences":[],"lists":["starter"],"shortGloss":"界面；接口"},
+    "maintain": {"word":"maintain","us":"meɪnˈteɪn","uk":"meɪnˈteɪn","translations":[{"type":"v.","translation":"维护；保持"}],"phrases":[{"phrase":"maintain a project","translation":"维护项目"}],"sentences":[],"lists":["starter"],"shortGloss":"维护；保持"},
+    "performance": {"word":"performance","us":"pərˈfɔːrməns","uk":"pəˈfɔːməns","translations":[{"type":"n.","translation":"性能；表现"}],"phrases":[{"phrase":"runtime performance","translation":"运行时性能"}],"sentences":[],"lists":["starter"],"shortGloss":"性能；表现"},
+    "privacy": {"word":"privacy","us":"ˈpraɪvəsi","uk":"ˈprɪvəsi","translations":[{"type":"n.","translation":"隐私"}],"phrases":[{"phrase":"privacy policy","translation":"隐私政策"}],"sentences":[],"lists":["starter"],"shortGloss":"隐私"},
+    "reliable": {"word":"reliable","us":"rɪˈlaɪəbəl","uk":"rɪˈlaɪəbəl","translations":[{"type":"adj.","translation":"可靠的"}],"phrases":[{"phrase":"reliable service","translation":"可靠的服务"}],"sentences":[],"lists":["starter"],"shortGloss":"可靠的"},
+    "translate": {"word":"translate","us":"trænsˈleɪt","uk":"trænzˈleɪt","translations":[{"type":"v.","translation":"翻译；转化"}],"phrases":[{"phrase":"translate a page","translation":"翻译页面"}],"sentences":[],"lists":["starter"],"shortGloss":"翻译；转化"}
+  }
+}

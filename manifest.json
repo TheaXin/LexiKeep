@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "留词通读",
+  "version": "1.0.0",
+  "description": "一键把英文网页译成中文，同时按词库保留少量英语关键词，帮助理解和学习并行。",
+  "permissions": [
+    "activeTab",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://api.mymemory.translated.net/*"
+  ],
+  "action": {
+    "default_title": "留词通读",
+    "default_popup": "src/popup.html"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/dictionary.json",
+        "src/styles.css"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

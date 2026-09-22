@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>留词通读</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        margin: 0;
+        width: 340px;
+        background: #f7f1e8;
+        color: #1f1c18;
+        font: 14px/1.45 "PingFang SC", "Noto Sans SC", sans-serif;
+      }
+
+      .popup {
+        padding: 18px;
+      }
+
+      .popup h1 {
+        margin: 0 0 6px;
+        font-size: 20px;
+      }
+
+      .popup p {
+        margin: 0 0 14px;
+        color: #5d5148;
+      }
+
+      .popup fieldset {
+        margin: 0 0 14px;
+        padding: 12px;
+        border: 1px solid #d8cbb5;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.7);
+      }
+
+      .popup legend {
+        padding: 0 6px;
+        font-weight: 600;
+      }
+
+      .popup label {
+        display: flex;
+        gap: 8px;
+        margin: 6px 0;
+        align-items: center;
+      }
+
+      .popup .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .popup .dictionary-link {
+        width: 100%;
+        margin-top: 10px;
+        background: #d9c7ae;
+        color: #3d3127;
+      }
+
+      .popup button {
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: #1d6f5f;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .popup button.secondary {
+        background: #876c53;
+      }
+
+      .popup .footnote {
+        margin-top: 12px;
+        font-size: 12px;
+        color: #7a6d61;
+      }
+
+      .popup .status {
+        min-height: 18px;
+        margin-top: 12px;
+        font-size: 12px;
+        color: #6c5a46;
+      }
+
+      .popup .status.error {
+        color: #a93d2d;
+      }
+
+      .popup .status.success {
+        color: #1d6f5f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="popup">
+      <h1>留词通读</h1>
+      <p>一键看懂英文网页，同时按词库保留少量英文关键词，边读边学，不完全依赖中文。</p>
+
+      <fieldset>
+        <legend>重点词表</legend>
+        <label><input type="checkbox" name="list" value="starter" /> 开源示例词库</label>
+      </fieldset>
+
+      <div class="actions">
+        <button id="translatePage" type="button">翻译当前页</button>
+        <button id="restorePage" type="button" class="secondary">恢复原页</button>
+      </div>
+
+      <button id="openDictionary" type="button" class="dictionary-link">查看词库与词数</button>
+
+      <div id="status" class="status"></div>
+
+      <div class="footnote">
+        当前会优先翻完整页可见英文；词库词默认只保留少量关键项，并可点“详”查看完整释义。
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+  </html>

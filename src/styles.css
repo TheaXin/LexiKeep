@@ -1,0 +1,118 @@
+.ltp-wrapper {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.ltp-line {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.ltp-protected {
+  display: inline;
+  margin: 0 0.08em;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ltp-word {
+  font-weight: 700;
+  color: #6b4700;
+}
+
+.ltp-inline-translation {
+  color: #6d6358;
+  font-size: 0.94em;
+}
+
+.ltp-detail-button {
+  margin-left: 0.18em;
+  padding: 0 0.36em;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(193, 150, 67, 0.16);
+  color: #8a5e11;
+  font-size: 0.66em;
+  font-weight: 700;
+  line-height: 1.35;
+  cursor: pointer;
+  vertical-align: super;
+}
+
+.ltp-detail-button:hover {
+  background: rgba(193, 150, 67, 0.28);
+}
+
+#ltp-note-card {
+  position: fixed;
+  z-index: 2147483647;
+  width: min(360px, calc(100vw - 24px));
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(103, 78, 42, 0.15);
+  background:
+    radial-gradient(circle at top right, rgba(255, 248, 221, 0.88), rgba(255, 244, 207, 0.96)),
+    #fff7db;
+  box-shadow: 0 22px 50px rgba(81, 64, 22, 0.22);
+  color: #2b251d;
+  backdrop-filter: blur(10px);
+}
+
+.ltp-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ltp-card-word {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.ltp-card-meta {
+  margin-top: 4px;
+  color: #6c5a46;
+  font-size: 12px;
+}
+
+.ltp-close {
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: #7f6644;
+}
+
+.ltp-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(123, 95, 47, 0.22);
+}
+
+.ltp-section h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: #805713;
+}
+
+.ltp-section p {
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
+
+.ltp-section span {
+  color: #5d5148;
+}
+
+.ltp-card-footer {
+  margin-top: 10px;
+  font-size: 12px;
+  color: #7a6d61;
+}

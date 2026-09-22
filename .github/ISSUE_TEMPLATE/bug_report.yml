@@ -1,0 +1,25 @@
+name: Bug report
+description: 报告可复现的问题
+title: "[Bug] "
+labels: [bug]
+body:
+  - type: textarea
+    attributes:
+      label: 问题描述
+      description: 请说明期望行为和实际行为。
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: 浏览器与扩展版本
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: 其他信息
+      description: 请勿提交密码、私人页面内容或其他敏感数据。
