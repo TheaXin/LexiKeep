@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>留词通读演示</title>
+    <style>
+      :root {
+        --paper: #f8f3ea;
+        --ink: #2f2822;
+        --muted: #6d6256;
+        --brand: #1d6f5f;
+        --brand-soft: rgba(29, 111, 95, 0.12);
+        --warm: #b17a33;
+        --line: rgba(96, 75, 49, 0.14);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 40px 18px 64px;
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.64), transparent 42%),
+          linear-gradient(180deg, #efe2c7 0%, var(--paper) 40%, #f6f0e8 100%);
+        color: var(--ink);
+        font: 16px/1.7 "PingFang SC", "Noto Sans SC", sans-serif;
+      }
+      .layout {
+        max-width: 1180px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 320px minmax(0, 1fr);
+        gap: 20px;
+        align-items: start;
+      }
+      .panel, .reader {
+        border-radius: 28px;
+        background: rgba(255, 252, 246, 0.82);
+        border: 1px solid var(--line);
+        box-shadow: 0 22px 60px rgba(91, 70, 32, 0.12);
+      }
+      .panel {
+        padding: 24px;
+        position: sticky;
+        top: 18px;
+      }
+      .eyebrow {
+        display: inline-flex;
+        margin-bottom: 14px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+      .panel h1 {
+        margin: 0 0 10px;
+        font-size: 34px;
+        line-height: 1.1;
+      }
+      .panel p {
+        margin: 0;
+        color: var(--muted);
+      }
+      .control-box {
+        margin-top: 20px;
+        padding: 18px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.72);
+      }
+      .control-box h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+      .check-list { display: grid; gap: 10px; }
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+      }
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 18px;
+      }
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      button.primary { background: var(--brand); color: #fff; }
+      button.secondary { background: #9a7d60; color: #fff; }
+      .hint {
+        margin-top: 16px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .reader { padding: 28px; }
+      .browser-head {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d0c1ad;
+      }
+      .url {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+      article { max-width: 760px; }
+      article h2 {
+        margin: 0 0 18px;
+        font-size: clamp(28px, 5vw, 46px);
+        line-height: 1.16;
+      }
+      article p {
+        margin: 0 0 16px;
+        font-size: 20px;
+        color: #3c3128;
+      }
+      .translated-word { font-weight: 700; color: #6f4b12; }
+      .translated-gloss { color: #7b6f64; }
+      .detail-tag {
+        display: inline-block;
+        margin-left: 4px;
+        padding: 1px 8px;
+        border-radius: 999px;
+        background: rgba(177, 122, 51, 0.16);
+        color: var(--warm);
+        font-size: 12px;
+        vertical-align: middle;
+      }
+      @media (max-width: 920px) {
+        .layout { grid-template-columns: 1fr; }
+        .panel { position: static; }
+        .actions { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="panel">
+        <div class="eyebrow">一键体验</div>
+        <h1>留词通读演示</h1>
+        <p>这里不需要安装插件。选择词库后，直接点击按钮，就可以看到“全英文网页”切换成“中文为主、关键词保留英文”的演示效果。</p>
+        <section class="control-box">
+          <h2>重点词表</h2>
+          <div class="check-list">
+            <label class="check-item"><input type="checkbox" value="ielts" checked /> 雅思</label>
+            <label class="check-item"><input type="checkbox" value="cet4" /> 四级</label>
+            <label class="check-item"><input type="checkbox" value="cet6" /> 六级</label>
+            <label class="check-item"><input type="checkbox" value="business" checked /> 商务英语</label>
+          </div>
+          <div class="actions">
+            <button id="translateButton" class="primary" type="button">一键体验</button>
+            <button id="restoreButton" class="secondary" type="button">恢复原页</button>
+          </div>
+          <div class="hint">当前演示会优先把段落翻成中文，同时只保留少量词库关键词，并显示为“英文(中文)”。</div>
+        </section>
+      </aside>
+
+      <main class="reader">
+        <div class="browser-head">
+          <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          <span class="url">bbc.com/news/articles/cz97ljy91zxo</span>
+        </div>
+        <article>
+          <h2 id="title">Why tech bosses keep sharing their manifestos about AI</h2>
+          <p id="para1">This past week, Meta CEO Mark Zuckerberg published a 6,500 word open letter entitled "The Future is for Everyone".</p>
+          <p id="para2">To some, it's an expression of hope in AI's promise. To others, it's little more than a verbose public relations exercise.</p>
+          <p id="para3">Zuckerberg's manifesto is the latest example of a tech boss opining on why AI is the next big thing.</p>
+          <p id="para4">His vision echoes what AI leaders have expressed in various forms: the product they are building is among the "most important technologies in history".</p>
+        </article>
+      </main>
+    </div>
+    <script>
+      const translations = {
+        title: "为什么科技巨头总在不断发布他们关于 AI 的宣言",
+        para1: "就在过去这一周，Meta 首席执行官 Mark Zuckerberg 发布了一封长达 6500 词的公开信，题为《未来属于每一个人》。",
+        para2: "有些人把它看作对 AI 前景的乐观表达，也有人认为，这不过是一场冗长的 public relations 表演。",
+        para3: "Zuckerberg 的 manifesto，是科技行业领袖不断解释“为什么 AI 是下一件大事”的最新例子。",
+        para4: "他的 vision 也呼应了许多 AI 领导者反复传达的一点：他们正在打造的产品，是“历史上最重要的 technologies 之一”。"
+      };
+      const protectedWords = {
+        open: { lists: ["ielts"], gloss: "公开的；开放的" },
+        letter: { lists: ["cet4", "ielts"], gloss: "信；函件" },
+        public: { lists: ["cet4", "business"], gloss: "公众的；公开的" },
+        relations: { lists: ["business"], gloss: "关系；公关事务" },
+        manifesto: { lists: ["ielts", "business"], gloss: "宣言；声明" },
+        vision: { lists: ["ielts", "business"], gloss: "愿景；看法" },
+        technologies: { lists: ["cet6", "business"], gloss: "技术；科技" }
+      };
+      const original = {
+        title: document.getElementById("title").innerHTML,
+        para1: document.getElementById("para1").innerHTML,
+        para2: document.getElementById("para2").innerHTML,
+        para3: document.getElementById("para3").innerHTML,
+        para4: document.getElementById("para4").innerHTML
+      };
+      function selectedLists() {
+        return new Set(Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map((input) => input.value));
+      }
+      function formatWord(word, gloss) {
+        return `<span class="translated-word">${word}</span><span class="translated-gloss">(${gloss})</span><span class="detail-tag">详</span>`;
+      }
+      function translateDemo() {
+        const activeLists = selectedLists();
+        document.getElementById("title").textContent = translations.title;
+        let para1 = translations.para1;
+        if ([...protectedWords.open.lists].some((list) => activeLists.has(list))) {
+          para1 = para1.replace("公开信", `${formatWord("open letter", "公开信")} `);
+        } else if ([...protectedWords.letter.lists].some((list) => activeLists.has(list))) {
+          para1 = para1.replace("公开信", `公开${formatWord("letter", protectedWords.letter.gloss)}`);
+        }
+        let para2 = translations.para2;
+        if ([...protectedWords.public.lists].some((list) => activeLists.has(list))) {
+          para2 = para2.replace("public relations", `${formatWord("public relations", "公共关系；公关")} `);
+        }
+        let para3 = translations.para3;
+        if ([...protectedWords.manifesto.lists].some((list) => activeLists.has(list))) {
+          para3 = para3.replace("manifesto", formatWord("manifesto", protectedWords.manifesto.gloss));
+        }
+        let para4 = translations.para4;
+        if ([...protectedWords.vision.lists].some((list) => activeLists.has(list))) {
+          para4 = para4.replace("vision", formatWord("vision", protectedWords.vision.gloss));
+        }
+        if ([...protectedWords.technologies.lists].some((list) => activeLists.has(list))) {
+          para4 = para4.replace("technologies", formatWord("technologies", protectedWords.technologies.gloss));
+        }
+        document.getElementById("para1").innerHTML = para1;
+        document.getElementById("para2").innerHTML = para2;
+        document.getElementById("para3").innerHTML = para3;
+        document.getElementById("para4").innerHTML = para4;
+      }
+      function restoreDemo() {
+        document.getElementById("title").innerHTML = original.title;
+        document.getElementById("para1").innerHTML = original.para1;
+        document.getElementById("para2").innerHTML = original.para2;
+        document.getElementById("para3").innerHTML = original.para3;
+        document.getElementById("para4").innerHTML = original.para4;
+      }
+      document.getElementById("translateButton").addEventListener("click", translateDemo);
+      document.getElementById("restoreButton").addEventListener("click", restoreDemo);
+    </script>
+  </body>
+  </html>

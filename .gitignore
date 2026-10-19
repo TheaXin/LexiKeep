@@ -2,9 +2,7 @@ data/raw/
 assets/compiled-dictionary.json
 dist/
 downloads/
-# Local product mockups (not part of the extension release)
-demo-page.html
-showcase.html
+# Local product copy drafts
 showcase-copy.md
 *.pyc
 __pycache__/

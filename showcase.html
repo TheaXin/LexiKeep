@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>留词通读 - 英文网页阅读学习插件</title>
+    <meta
+      name="description"
+      content="留词通读是一款面向英语非母语用户的网页翻译学习插件，帮助用户快速理解英文网页内容，同时保留少量关键词英语进行情境化学习。"
+    />
+    <style>
+      :root {
+        --bg: #efe5d7;
+        --bg-soft: #f7f2eb;
+        --paper: rgba(255, 253, 249, 0.82);
+        --ink: #241d17;
+        --muted: #65594e;
+        --line: rgba(82, 61, 37, 0.12);
+        --brand: #185f52;
+        --brand-soft: rgba(24, 95, 82, 0.12);
+        --accent: #b17a33;
+        --shadow: 0 22px 70px rgba(74, 54, 26, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.58), transparent 32%),
+          linear-gradient(180deg, #e9dcc9 0%, var(--bg) 38%, #f8f4ef 100%);
+        font: 16px/1.65 "PingFang SC", "Noto Sans SC", sans-serif;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page {
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 28px 20px 56px;
+      }
+
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .brand-mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(145deg, #1a6f60, #0d433b);
+        color: #fff;
+        font-weight: 700;
+      }
+
+      .brand-copy strong {
+        display: block;
+        font-size: 18px;
+      }
+
+      .brand-copy span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .nav-links a {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.56);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .card {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(8px);
+      }
+
+      .hero-copy {
+        padding: 34px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--brand-soft);
+        color: var(--brand);
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.04em;
+      }
+
+      .hero h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(34px, 6vw, 64px);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+      }
+
+      .hero p.lead {
+        margin: 0;
+        font-size: 18px;
+        color: #453a30;
+        max-width: 640px;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .hero-actions a {
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      .hero-actions a.primary {
+        background: var(--brand);
+        color: #fff;
+      }
+
+      .hero-actions a.secondary {
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .hero-meta .metric {
+        padding: 14px 16px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid var(--line);
+      }
+
+      .hero-meta .metric strong {
+        display: block;
+        font-size: 20px;
+      }
+
+      .hero-meta .metric span {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .preview {
+        padding: 24px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .preview::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at top right, rgba(255, 247, 205, 0.8), transparent 25%),
+          radial-gradient(circle at bottom left, rgba(24, 95, 82, 0.1), transparent 30%);
+        pointer-events: none;
+      }
+
+      .browser-shell {
+        position: relative;
+        z-index: 1;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #fff;
+      }
+
+      .browser-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        background: #f7f2eb;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      }
+
+      .browser-dots {
+        display: flex;
+        gap: 8px;
+      }
+
+      .browser-dots span {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #d0c1ad;
+      }
+
+      .browser-url {
+        flex: 1;
+        margin: 0 14px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: #fff;
+        color: #76695e;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .browser-badge {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(24, 95, 82, 0.1);
+        color: var(--brand);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .browser-body {
+        padding: 20px;
+        background: linear-gradient(180deg, #fff 0%, #fcfaf7 100%);
+      }
+
+      .demo-title {
+        margin: 0 0 16px;
+        font-size: 30px;
+        line-height: 1.2;
+      }
+
+      .translated-line {
+        margin-bottom: 14px;
+        color: #3d3228;
+      }
+
+      .translated-line .word {
+        font-weight: 700;
+        color: #775114;
+      }
+
+      .translated-line .gloss {
+        color: #7a6d61;
+      }
+
+      .translated-line .detail {
+        display: inline-block;
+        margin-left: 6px;
+        padding: 1px 8px;
+        border-radius: 999px;
+        background: rgba(177, 122, 51, 0.16);
+        color: var(--accent);
+        font-size: 12px;
+        vertical-align: middle;
+      }
+
+      .note {
+        margin-top: 16px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: #fff6d9;
+        border: 1px solid rgba(177, 122, 51, 0.18);
+        color: #5a4527;
+        font-size: 14px;
+      }
+
+      section.block {
+        margin-top: 22px;
+        padding: 28px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 22px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 42px);
+        line-height: 1.08;
+      }
+
+      .section-head p {
+        margin: 0;
+        max-width: 620px;
+        color: var(--muted);
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .feature-card,
+      .value-card,
+      .timeline-card,
+      .resume-card {
+        padding: 20px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.76);
+        border: 1px solid var(--line);
+      }
+
+      .feature-card h3,
+      .value-card h3,
+      .timeline-card h3,
+      .resume-card h3 {
+        margin: 0 0 10px;
+        font-size: 20px;
+      }
+
+      .feature-card p,
+      .value-card p,
+      .timeline-card p,
+      .resume-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .tag-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 16px;
+      }
+
+      .tag {
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .resume-card.primary {
+        background: linear-gradient(180deg, rgba(24, 95, 82, 0.92), rgba(14, 63, 54, 0.96));
+        color: #fff;
+        border: none;
+      }
+
+      .resume-card.primary p,
+      .resume-card.primary li {
+        color: rgba(255, 255, 255, 0.82);
+      }
+
+      .resume-card ul {
+        margin: 14px 0 0;
+        padding-left: 18px;
+      }
+
+      .resume-card li {
+        margin-bottom: 8px;
+      }
+
+      .hr-anchor {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        border-radius: 18px;
+        background: #fff;
+        border: 1px solid var(--line);
+        margin-top: 18px;
+        font-weight: 600;
+      }
+
+      .footer {
+        margin-top: 24px;
+        padding: 20px 24px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.65);
+        border: 1px solid var(--line);
+        color: var(--muted);
+      }
+
+      .footer strong {
+        color: var(--ink);
+      }
+
+      .flow-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .try-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 16px;
+      }
+
+      .try-card {
+        padding: 22px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+      }
+
+      .try-card h3 {
+        margin: 0 0 10px;
+        font-size: 22px;
+      }
+
+      .try-card p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .try-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .try-actions a {
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      .try-actions a.primary {
+        background: var(--brand);
+        color: #fff;
+      }
+
+      .try-actions a.secondary {
+        background: rgba(255, 255, 255, 0.88);
+        border: 1px solid var(--line);
+        color: var(--ink);
+      }
+
+      .try-steps {
+        margin: 14px 0 0;
+        padding-left: 18px;
+        color: var(--muted);
+      }
+
+      .try-steps li {
+        margin-bottom: 8px;
+      }
+
+      .flow-card {
+        padding: 18px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid var(--line);
+      }
+
+      .flow-card h3 {
+        margin: 0 0 12px;
+        font-size: 18px;
+      }
+
+      .flow-shot {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: #fff;
+      }
+
+      .flow-shot .bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #f6efe5;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      }
+
+      .flow-shot .bar span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d0c1ad;
+      }
+
+      .flow-shot .canvas {
+        padding: 16px;
+      }
+
+      .en-title,
+      .zh-title {
+        margin: 0 0 12px;
+        font-size: 22px;
+        line-height: 1.25;
+      }
+
+      .en-text,
+      .zh-text {
+        margin: 0 0 12px;
+        color: #43372c;
+        font-size: 15px;
+      }
+
+      .control-panel {
+        display: grid;
+        gap: 12px;
+      }
+
+      .control-box {
+        padding: 14px;
+        border-radius: 18px;
+        background: #fcfaf7;
+        border: 1px solid var(--line);
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .check-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .check {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        border: 1px solid #c9b8a2;
+        background: #fff;
+      }
+
+      .check.on {
+        background: #1d6f5f;
+        border-color: #1d6f5f;
+        box-shadow: inset 0 0 0 3px #fff;
+      }
+
+      .action-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .action-btn {
+        padding: 10px 12px;
+        border-radius: 999px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .action-btn.primary {
+        background: #1d6f5f;
+        color: #fff;
+      }
+
+      .action-btn.secondary {
+        background: #9b7d5f;
+        color: #fff;
+      }
+
+      .mini-tag {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: rgba(177, 122, 51, 0.16);
+        color: var(--accent);
+        font-size: 12px;
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .grid-3,
+        .grid-2,
+        .flow-grid,
+        .try-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .section-head {
+          align-items: start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="nav">
+        <div class="brand">
+          <div class="brand-mark">留</div>
+          <div class="brand-copy">
+            <strong>留词通读</strong>
+            <span>英文网页翻译与情境化词汇学习插件</span>
+          </div>
+        </div>
+        <nav class="nav-links">
+          <a href="#overview">项目概览</a>
+          <a href="#workflow">效果展示</a>
+          <a href="#try">立即试用</a>
+          <a href="#features">核心功能</a>
+        </nav>
+      </header>
+
+      <section class="hero">
+        <article class="card hero-copy" id="overview">
+          <span class="eyebrow">浏览器插件 / 产品案例</span>
+          <h1>一键看懂英文网页，同时保留少量关键词继续学习。</h1>
+          <p class="lead">
+            留词通读面向英语非母语用户。它会优先把网页内容翻译成中文，再按词库保留少量关键词英文，让用户在快速理解内容的同时，保留一点原文阅读和词汇学习的触感。
+          </p>
+
+          <div class="hero-actions">
+            <a class="primary" href="#workflow">查看效果展示</a>
+            <a class="secondary" href="#features">查看核心功能</a>
+          </div>
+
+          <div class="hero-meta">
+            <div class="metric">
+              <strong>翻译</strong>
+              <span>优先帮助用户快速理解网页内容</span>
+            </div>
+            <div class="metric">
+              <strong>留词</strong>
+              <span>按词库保留少量英语关键词</span>
+            </div>
+            <div class="metric">
+              <strong>学习</strong>
+              <span>点击即可查看词义、词性、短语与例句</span>
+            </div>
+          </div>
+        </article>
+
+        <aside class="card preview">
+          <div class="browser-shell">
+            <div class="browser-top">
+              <div class="browser-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="browser-url">bbc.com/news/articles/cz97ljy91zxo</div>
+              <div class="browser-badge">留词通读已开启</div>
+            </div>
+            <div class="browser-body">
+              <h2 class="demo-title">为什么科技巨头总在不断发布他们关于 AI 的宣言</h2>
+              <div class="translated-line">
+                就在过去这一周，Meta 首席执行官 Mark Zuckerberg 发布了一封长达 6500 词的
+                <span class="word">open letter</span><span class="gloss">(公开信)</span>
+                <span class="detail">详</span>
+                ，题为《未来属于每一个人》。
+              </div>
+              <div class="translated-line">
+                有些人把它看作对 AI 前景的乐观表达，也有人认为，这不过是一场冗长的
+                <span class="word">public relations</span><span class="gloss">(公共关系；公关)</span>
+                表演。
+              </div>
+              <div class="note">
+                普通英文优先翻译成中文，只保留少量词库关键词，让阅读理解和词汇学习同时发生。
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="card block" id="workflow">
+        <div class="section-head">
+          <h2>工作流程与展示效果</h2>
+          <p>
+            从全英文网页，到选择词库，再到一键翻译后的结果，整个流程会保持清晰、直接、可理解。
+          </p>
+        </div>
+        <div class="flow-grid">
+          <div class="flow-card">
+            <h3>01 原始网页</h3>
+            <div class="flow-shot">
+              <div class="bar"><span></span><span></span><span></span></div>
+              <div class="canvas">
+                <h4 class="en-title">Why tech bosses keep sharing their manifestos about AI</h4>
+                <p class="en-text">This past week, Meta CEO Mark Zuckerberg published a 6,500 word open letter entitled "The Future is for Everyone".</p>
+                <p class="en-text">To some, it's an expression of hope in AI's promise. To others, it's little more than a verbose public relations exercise.</p>
+              </div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <h3>02 选择重点词库</h3>
+            <div class="flow-shot">
+              <div class="bar"><span></span><span></span><span></span></div>
+              <div class="canvas control-panel">
+                <div class="control-box">
+                  <div class="check-item"><span class="check on"></span><strong>雅思</strong></div>
+                  <div class="check-item"><span class="check"></span><strong>四级</strong></div>
+                  <div class="check-item"><span class="check"></span><strong>六级</strong></div>
+                  <div class="check-item"><span class="check on"></span><strong>商务英语</strong></div>
+                </div>
+                <div class="action-row">
+                  <div class="action-btn primary">翻译当前页</div>
+                  <div class="action-btn secondary">恢复原页</div>
+                </div>
+                <div class="action-btn" style="background:#dfccb0;color:#3a2e25;">查看词库与词数</div>
+              </div>
+            </div>
+          </div>
+          <div class="flow-card">
+            <h3>03 翻译后状态</h3>
+            <div class="flow-shot">
+              <div class="bar"><span></span><span></span><span></span></div>
+              <div class="canvas">
+                <h4 class="zh-title">为什么科技巨头总在不断发布他们关于 AI 的宣言</h4>
+                <p class="zh-text">
+                  就在过去这一周，Meta 首席执行官 Mark Zuckerberg 发布了一封
+                  <strong>open letter</strong>(公开信)
+                  <span class="mini-tag">详</span>
+                  ，题为《未来属于每一个人》。
+                </p>
+                <p class="zh-text">有些人把它看作对 AI 前景的乐观表达，也有人认为，这不过是一场冗长的 <strong>public relations</strong>(公共关系；公关) 表演。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card block" id="try">
+        <div class="section-head">
+          <h2>立即试用</h2>
+          <p>可以先直接打开演示页查看效果，也可以下载插件包，在浏览器中加载后亲自操作。</p>
+        </div>
+        <div class="try-grid">
+          <div class="try-card">
+            <h3>快速体验</h3>
+            <p>直接打开演示页，不需要安装插件，也能点击按钮完成一次完整体验。</p>
+            <div class="try-actions">
+              <a class="primary" href="./demo-page.html">打开演示页</a>
+              <a class="secondary" href="./src/dictionary.html">查看词库页</a>
+            </div>
+          </div>
+          <div class="try-card">
+            <h3>安装使用</h3>
+            <p>获取源码后，在 Chrome 或 Edge 中开启开发者模式，加载已解压扩展即可使用。</p>
+            <div class="try-actions">
+              <a class="primary" href="https://github.com/TheaXin/LexiKeep">获取项目源码</a>
+              <a class="secondary" href="https://github.com/TheaXin/LexiKeep#readme">查看安装说明</a>
+            </div>
+            <ol class="try-steps">
+              <li>从 GitHub 下载并解压源码</li>
+              <li>打开浏览器扩展管理页</li>
+              <li>开启开发者模式并加载扩展目录</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="card block" id="features">
+        <div class="section-head">
+          <h2>核心功能</h2>
+          <p>功能设计围绕“快速理解网页内容”和“保留轻量学习感”展开。</p>
+        </div>
+        <div class="grid-2">
+          <div class="feature-card">
+            <h3>1. 一键整页翻译</h3>
+            <p>优先把网页中的可见英文翻译成中文，让用户先快速看懂内容。</p>
+          </div>
+          <div class="feature-card">
+            <h3>2. 按词库保留关键词英文</h3>
+            <p>根据雅思、四六级、商务英语等词库，只保留少量关键词，显示为“英文(中文)”。</p>
+          </div>
+          <div class="feature-card">
+            <h3>3. 点击查看词汇详情</h3>
+            <p>点击“详”按钮后，可以查看词性、释义、短语和例句，不打断当前阅读。</p>
+          </div>
+          <div class="feature-card">
+            <h3>4. 词库页独立浏览</h3>
+            <p>可以查看词库总词数、筛选词表、搜索词条，并单独打开单词详情页。</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <strong>留词通读</strong>
+        把整页翻译、词库选择、关键词保留和详情查看组合成一条清晰的阅读学习流程。
+      </footer>
+    </div>
+  </body>
+  </html>

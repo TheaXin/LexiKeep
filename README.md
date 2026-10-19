@@ -2,6 +2,9 @@
 
 留词通读是一款面向中文用户的 Chrome / Edge 开源浏览器扩展。它会把当前英文页面翻译为中文，同时保留少量值得学习的英文关键词，并提供行内释义。
 
+- [查看作品集中的在线交互演示](https://thea-data-portfolio.xinyixuan173.chatgpt.site/products/wordflow.html)
+- [查看本仓库的产品展示页](showcase.html)
+
 ## 特性
 
 - 仅在用户点击“翻译当前页”后访问页面，不在所有网站常驻执行。
@@ -43,6 +46,8 @@ src/popup.*              # 扩展弹窗
 src/dictionary.*         # 词库浏览页
 scripts/check_project.py # 项目完整性检查
 scripts/package.py       # 生成可发布 ZIP
+showcase.html            # 产品介绍与试用入口
+demo-page.html           # 独立交互演示页
 ```
 
 ## 开发与检查
@@ -55,6 +60,10 @@ python3 scripts/package.py
 ```
 
 第一条命令会检查 Manifest、JSON、JavaScript 语法和发布必需文件。第二条命令会在 `dist/` 生成不含开发文档和本地文件的安装包。
+
+## 网页演示部署
+
+`showcase.html` 和 `demo-page.html` 是不依赖后端的静态页面。若要单独部署展示页，需同时保留 `src/dictionary.html`、`src/dictionary.js`、`src/styles.css` 和 `assets/dictionary.json` 的相对路径。仓库提供 GitHub Pages 工作流；在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions** 后，推送 `main` 即可发布。浏览器扩展本身不能通过 GitHub Pages 安装，仍需按上方“安装”步骤加载或发布扩展包。
 
 ## 已知限制
 
