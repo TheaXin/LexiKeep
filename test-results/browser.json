@@ -1,0 +1,15 @@
+{
+  "results": [
+    "first-install guide and defaults",
+    "hidden ancestor, editing area, code and translate=no are not sent",
+    "restore is exact, repeat translation has no nested wrappers",
+    "long text is split within UTF-8 bounds",
+    "service failure preserves source and reports failure count",
+    "learning mode renders intact keywords and detail card",
+    "damaged learning tokens preserve source",
+    "duplicate injection and restore during active request are safe",
+    "popup handles restricted page and releases busy buttons",
+    "DOM changed during request is not overwritten"
+  ],
+  "limitation": "Temporary manifest adds localhost permission. Real unmodified permission flow is tested separately in native-flow.json."
+}

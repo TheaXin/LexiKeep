@@ -15,7 +15,7 @@ LexiKeep 是一款面向中文用户的 Chrome / Edge 开源浏览器扩展。�
 
 ## 安装
 
-1. 从 [最新 Release](https://github.com/TheaXin/LexiKeep/releases/latest) 下载 `lexikeep-1.1.0.zip` 并解压（不要选择 GitHub 自动生成的 Source code）。也可直接加载本仓库源码。
+1. 从 [最新 Release](https://github.com/TheaXin/LexiKeep/releases/latest) 下载 `lexikeep-1.1.1.zip` 并解压（不要选择 GitHub 自动生成的 Source code）。也可直接加载本仓库源码。
 2. 打开 `chrome://extensions` 或 `edge://extensions`。
 3. 开启“开发者模式”。
 4. 选择“加载已解压的扩展程序”，然后选择包含 `manifest.json` 的解压目录。请保留此目录，ZIP 不能直接安装。
@@ -64,6 +64,7 @@ python3 scripts/package.py
 
 ## 已知限制
 
+- 在线固定语料评测中发现惯用语误译（例如 call it a day）；请结合原文核对。测试结果和边界见 [TESTING.md](TESTING.md)。
 - MyMemory 公共服务有配额、速度和可用性限制；失败段落保留原文并显示失败数量。
 - 学习模式会以占位符替换少量关键词，可能影响语义准确性，默认关闭。占位符损坏时保留原文。
 - 完整句子跨多个 DOM 文本节点时，仍按节点翻译，跨节点语境存在限制。

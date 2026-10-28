@@ -145,8 +145,13 @@
   }
 
   function isVisible(element) {
+    if (!element.getClientRects().length) return false;
+    for (let current = element; current; current = current.parentElement) {
+      const style = window.getComputedStyle(current);
+      if (style.display === "none" || style.opacity === "0") return false;
+    }
     const style = window.getComputedStyle(element);
-    return style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
+    return style.visibility !== "hidden" && style.visibility !== "collapse";
   }
 
   function isLayoutSensitiveNode(node) {

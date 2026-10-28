@@ -17,3 +17,5 @@ __pycache__/
 .continuity-keeper/
 PROGRESS.md
 CONTINUITY_TASKS.md
+
+node_modules/

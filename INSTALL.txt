@@ -1,6 +1,6 @@
-LexiKeep 1.1.0 — Chrome / Edge 扩展安装
+LexiKeep 1.1.1 — Chrome / Edge 扩展安装
 
-1. 解压 lexikeep-1.1.0.zip，保留解压文件夹。
+1. 解压 lexikeep-1.1.1.zip，保留解压文件夹。
 2. 在浏览器地址栏输入 chrome://extensions 或 edge://extensions。
 3. 开启开发者模式，点击“加载已解压的扩展程序”。
 4. 选择包含 manifest.json 的文件夹。

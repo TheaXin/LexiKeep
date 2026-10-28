@@ -1,0 +1,9 @@
+{
+  "results": [
+    "Unmodified production manifest: real native toolbar click granted activeTab",
+    "Popup initializes settings and dictionary",
+    "Real popup button injected production content script, fetched live Chinese translation: 已翻译 1 个文本块。",
+    "Real popup restore button restores exact original"
+  ],
+  "manifestModified": false
+}

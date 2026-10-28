@@ -1,0 +1,12 @@
+[
+ {"id":"simple","source":"Please save your changes before closing this window.","meaning":"关闭窗口前保存更改"},
+ {"id":"negation","source":"Do not turn off your computer while the update is in progress.","meaning":"更新期间不要关闭电脑"},
+ {"id":"bank-finance","source":"She deposited the money in her bank account.","meaning":"把钱存入银行账户"},
+ {"id":"bank-river","source":"They sat on the bank of the river and watched the boats.","meaning":"坐在河岸上看船"},
+ {"id":"business","source":"Revenue increased by 15 percent, but net profit fell because operating costs rose.","meaning":"收入增15%，运营成本上升致净利润下降"},
+ {"id":"conditional","source":"If the payment fails, your order will not be shipped.","meaning":"付款失败则不发货"},
+ {"id":"idiom","source":"The team decided to call it a day after finishing the report.","meaning":"完成报告后结束当天工作"},
+ {"id":"technical","source":"The application stores a temporary copy in memory and deletes it when the browser restarts.","meaning":"应用将临时副本存于内存，浏览器重启后删除"},
+ {"id":"numbers","source":"The meeting starts at 9:30 AM on October 28, 2026, and lasts 45 minutes.","meaning":"2026年10月28日9:30开始，持续45分钟"},
+ {"id":"contrast","source":"Although the file is small, it may take a long time to download on a slow connection.","meaning":"文件虽小，网慢时仍可能下载很久"}
+]

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "simple",
+    "source": "Please save your changes before closing this window.",
+    "meaning": "关闭窗口前保存更改",
+    "result": "请在关闭此窗口之前保存您的更改。",
+    "ms": 2676
+  },
+  {
+    "id": "negation",
+    "source": "Do not turn off your computer while the update is in progress.",
+    "meaning": "更新期间不要关闭电脑",
+    "result": "请勿在更新过程中关闭计算机。",
+    "ms": 1768
+  },
+  {
+    "id": "bank-finance",
+    "source": "She deposited the money in her bank account.",
+    "meaning": "把钱存入银行账户",
+    "result": "她把钱存入银行账户。",
+    "ms": 692
+  },
+  {
+    "id": "bank-river",
+    "source": "They sat on the bank of the river and watched the boats.",
+    "meaning": "坐在河岸上看船",
+    "result": "他们坐在河岸上，看着船只。",
+    "ms": 674
+  },
+  {
+    "id": "business",
+    "source": "Revenue increased by 15 percent, but net profit fell because operating costs rose.",
+    "meaning": "收入增15%，运营成本上升致净利润下降",
+    "result": "收入增长了15% ，但由于运营成本上升，净利润下降。",
+    "ms": 710
+  },
+  {
+    "id": "conditional",
+    "source": "If the payment fails, your order will not be shipped.",
+    "meaning": "付款失败则不发货",
+    "result": "如果付款失败，您的订单将不会发货。",
+    "ms": 874
+  },
+  {
+    "id": "idiom",
+    "source": "The team decided to call it a day after finishing the report.",
+    "meaning": "完成报告后结束当天工作",
+    "result": "团队决定在完成报告后的第二天打电话。",
+    "ms": 707
+  },
+  {
+    "id": "technical",
+    "source": "The application stores a temporary copy in memory and deletes it when the browser restarts.",
+    "meaning": "应用将临时副本存于内存，浏览器重启后删除",
+    "result": "应用程序将临时副本存储在内存中，并在浏览器重新启动时将其删除。",
+    "ms": 698
+  },
+  {
+    "id": "numbers",
+    "source": "The meeting starts at 9:30 AM on October 28, 2026, and lasts 45 minutes.",
+    "meaning": "2026年10月28日9:30开始，持续45分钟",
+    "result": "会议于2026年10月28日上午9:30开始，持续45分钟。",
+    "ms": 690
+  },
+  {
+    "id": "contrast",
+    "source": "Although the file is small, it may take a long time to download on a slow connection.",
+    "meaning": "文件虽小，网慢时仍可能下载很久",
+    "result": "虽然文件很小，但在慢速连接下载可能需要很长时间。",
+    "ms": 754
+  }
+]

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LexiKeep",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "一键把英文网页译成中文，同时按词库保留少量英语关键词，帮助理解和学习并行。",
   "permissions": [
     "activeTab",
