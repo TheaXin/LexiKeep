@@ -1,4 +1,6 @@
 (function () {
+  if (globalThis.__lexiKeepLoaded) return;
+  globalThis.__lexiKeepLoaded = true;
   const WRAPPER_CLASS = "ltp-wrapper";
   const PROTECTED_CLASS = "ltp-protected";
   const DETAIL_BUTTON_CLASS = "ltp-detail-button";
@@ -114,14 +116,15 @@
     if (!node || !node.parentElement) {
       return false;
     }
-    if (EXCLUDED_TAGS.has(node.parentElement.tagName)) {
+    if (EXCLUDED_TAGS.has(node.parentElement.tagName) ||
+        node.parentElement.closest("script, style, noscript, textarea, input, code, pre, svg, [contenteditable]:not([contenteditable=\"false\"]), [translate=\"no\"], .notranslate")) {
       return false;
     }
     if (node.parentElement.closest(`.${WRAPPER_CLASS}, #${CARD_ID}`)) {
       return false;
     }
     const text = node.nodeValue || "";
-    if (text.trim().length < 3 || text.length > 450) {
+    if (text.trim().length < 3 || text.length > 20000) {
       return false;
     }
     return /[A-Za-z]/.test(text);
@@ -166,7 +169,7 @@
 
   function prepareSegment(node, settings) {
     const text = node.nodeValue || "";
-    const allowProtectedWords = !isLayoutSensitiveNode(node);
+    const allowProtectedWords = settings.learningMode === true && !isLayoutSensitiveNode(node);
     const candidates = [];
     let index = 0;
     text.replace(WORD_PATTERN, (surface) => {
@@ -187,7 +190,7 @@
     candidates.sort((left, right) => right.score - left.score);
     const selected = new Set(
       candidates
-        .slice(0, settings.maxProtectedWordsPerNode || 3)
+        .slice(0, settings.maxProtectedWordsPerNode ?? 2)
         .map((item) => `${item.surface.toLowerCase()}::${item.token}`)
     );
 
@@ -335,7 +338,9 @@
   }
 
   function renderTranslatedHtml(segment, translatedText) {
-    let html = escapeHtml(translatedText || segment.originalText);
+    const leading = segment.originalText.match(/^\s*/)[0];
+    const trailing = segment.originalText.match(/\s*$/)[0];
+    let html = escapeHtml(leading + (translatedText || segment.originalText).trim() + trailing);
     for (const item of segment.replacements) {
       html = html.replace(
         item.token,
@@ -353,7 +358,10 @@
     if (response?.error) {
       throw new Error(response.error);
     }
-    return response?.translated || maskedTexts;
+    if (!Array.isArray(response?.translated) || response.translated.length !== maskedTexts.length) {
+      throw new Error("翻译服务返回不完整，请重试");
+    }
+    return response;
   }
 
   function replaceTextNode(node, segment, translatedText, settings) {
@@ -362,6 +370,7 @@
     wrapper.dataset.originalText = segment.originalText;
     wrapper.innerHTML = renderTranslatedHtml(segment, translatedText);
     node.parentNode.replaceChild(wrapper, node);
+    state.translated = true;
   }
 
   async function translatePage() {
@@ -378,6 +387,8 @@
       restorePage();
     }
 
+    let count = 0;
+    let failed = 0;
     const nodes = collectTextNodes(settings.maxNodes || 180);
     const segments = nodes.map((node) => prepareSegment(node, settings));
 
@@ -385,16 +396,21 @@
       const end = start + 24;
       const nodeBatch = nodes.slice(start, end);
       const segmentBatch = segments.slice(start, end);
-      const translatedBatch = await requestTranslations(
+      const result = await requestTranslations(
         segmentBatch.map((segment) => segment.maskedText)
       );
       segmentBatch.forEach((segment, index) => {
-        replaceTextNode(nodeBatch[index], segment, translatedBatch[index], settings);
+        const translated = result.translated[index];
+        const invalidTokens = segment.replacements.some(({ token }) => translated.split(token).length !== 2);
+        if (result.failures?.includes(index) || invalidTokens) { failed += 1; return; }
+        if (!nodeBatch[index].isConnected || nodeBatch[index].nodeValue !== segment.originalText) return;
+        replaceTextNode(nodeBatch[index], segment, translated, settings);
+        count += 1;
       });
     }
 
     state.translated = true;
-    return { ok: true, count: nodes.length };
+    return { ok: true, count, failed };
     } finally {
       state.translating = false;
     }
@@ -483,6 +499,10 @@
       return true;
     }
     if (message?.type === "restore-page") {
+      if (state.translating) {
+        sendResponse({ ok: false, error: "请等待本次翻译完成后再恢复" });
+        return false;
+      }
       restorePage();
       sendResponse({ ok: true });
       return false;

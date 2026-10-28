@@ -1,9 +1,8 @@
-# 留词通读
+# LexiKeep
 
-留词通读是一款面向中文用户的 Chrome / Edge 开源浏览器扩展。它会把当前英文页面翻译为中文，同时保留少量值得学习的英文关键词，并提供行内释义。
+**Translate to understand. Keep words to learn.**
 
-- [查看作品集中的在线交互演示](https://thea-data-portfolio.xinyixuan173.chatgpt.site/products/wordflow.html)
-- [查看本仓库的产品展示页](showcase.html)
+LexiKeep 是一款面向中文用户的 Chrome / Edge 开源浏览器扩展。它会把当前英文页面翻译为中文，默认用完整原文翻译以保留语境；可选学习模式保留英文关键词并提供行内释义。
 
 ## 特性
 
@@ -16,15 +15,18 @@
 
 ## 安装
 
-1. 下载最新 [Release](../../releases) 中的 ZIP 并解压，或克隆本仓库。
+1. 从 [最新 Release](https://github.com/TheaXin/LexiKeep/releases/latest) 下载 `lexikeep-1.1.0.zip` 并解压（不要选择 GitHub 自动生成的 Source code）。也可直接加载本仓库源码。
 2. 打开 `chrome://extensions` 或 `edge://extensions`。
 3. 开启“开发者模式”。
-4. 选择“加载已解压的扩展程序”，然后选择项目根目录。
+4. 选择“加载已解压的扩展程序”，然后选择包含 `manifest.json` 的解压目录。请保留此目录，ZIP 不能直接安装。
+5. 在工具栏拼图菜单中固定 LexiKeep；首次安装会自动打开扩展内的使用指南。
+
+更新时覆盖原解压目录，在扩展管理页点击重新加载，然后刷新网页。无需部署网页或启动服务器。
 
 ## 使用
 
 1. 打开一个英文网页。
-2. 点击浏览器工具栏中的“留词通读”。
+2. 点击浏览器工具栏中的“LexiKeep”。
 3. 点击“翻译当前页”。
 4. 需要撤销时点击“恢复原页”。
 
@@ -46,8 +48,6 @@ src/popup.*              # 扩展弹窗
 src/dictionary.*         # 词库浏览页
 scripts/check_project.py # 项目完整性检查
 scripts/package.py       # 生成可发布 ZIP
-showcase.html            # 产品介绍与试用入口
-demo-page.html           # 独立交互演示页
 ```
 
 ## 开发与检查
@@ -56,19 +56,18 @@ demo-page.html           # 独立交互演示页
 
 ```bash
 python3 scripts/check_project.py
+node scripts/test_translation.cjs
 python3 scripts/package.py
 ```
 
 第一条命令会检查 Manifest、JSON、JavaScript 语法和发布必需文件。第二条命令会在 `dist/` 生成不含开发文档和本地文件的安装包。
 
-## 网页演示部署
-
-`showcase.html` 和 `demo-page.html` 是不依赖后端的静态页面。若要单独部署展示页，需同时保留 `src/dictionary.html`、`src/dictionary.js`、`src/styles.css` 和 `assets/dictionary.json` 的相对路径。仓库提供 GitHub Pages 工作流；在仓库 **Settings → Pages → Build and deployment** 选择 **GitHub Actions** 后，推送 `main` 即可发布。浏览器扩展本身不能通过 GitHub Pages 安装，仍需按上方“安装”步骤加载或发布扩展包。
-
 ## 已知限制
 
-- MyMemory 公共服务有配额、速度和可用性限制。
-- 为避免破坏复杂 DOM，单个超过 450 字符的文本节点会跳过。
+- MyMemory 公共服务有配额、速度和可用性限制；失败段落保留原文并显示失败数量。
+- 学习模式会以占位符替换少量关键词，可能影响语义准确性，默认关闭。占位符损坏时保留原文。
+- 完整句子跨多个 DOM 文本节点时，仍按节点翻译，跨节点语境存在限制。
+- 为避免破坏复杂 DOM，单个超过 20,000 字符的文本节点会跳过；其他长段落按句子优先拆分为不超过 480 UTF-8 字节的请求。拆分仍可能损失跨句语境。
 - 动态加载的新内容需要再次执行翻译。
 - 公开版仅附带小型示例词库；完整词库必须由使用者确保拥有可分发授权。
 
@@ -79,3 +78,7 @@ python3 scripts/package.py
 ## 许可证
 
 项目代码和自带示例词库均使用 [MIT License](LICENSE)。外部服务及用户自行导入的数据不因本项目而获得 MIT 授权。
+
+## GitHub 发布
+
+主分支更新后自动检查、测试和打包。首次出现的新 Manifest 版本会创建同名 Release 并上传扩展 ZIP 和 SHA-256 校验文件；已有版本不会覆盖。项目不需要网页部署。

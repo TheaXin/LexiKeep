@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>留词通读</title>
+    <title>LexiKeep</title>
     <link rel="stylesheet" href="styles.css" />
     <style>
       body {
@@ -98,7 +98,7 @@
   </head>
   <body>
     <div class="popup">
-      <h1>留词通读</h1>
+      <h1>LexiKeep</h1>
       <p>一键看懂英文网页，同时按词库保留少量英文关键词，边读边学，不完全依赖中文。</p>
 
       <fieldset>
@@ -106,6 +106,7 @@
         <label><input type="checkbox" name="list" value="starter" /> 开源示例词库</label>
       </fieldset>
 
+      <label><input id="learningMode" type="checkbox" /> 学习模式（保留英文词，可能影响语境）</label>
       <div class="actions">
         <button id="translatePage" type="button">翻译当前页</button>
         <button id="restorePage" type="button" class="secondary">恢复原页</button>
@@ -113,10 +114,11 @@
 
       <button id="openDictionary" type="button" class="dictionary-link">查看词库与词数</button>
 
-      <div id="status" class="status"></div>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+      <button id="openHelp" type="button" class="dictionary-link">安装与使用帮助</button>
 
       <div class="footnote">
-        当前会优先翻完整页可见英文；词库词默认只保留少量关键项，并可点“详”查看完整释义。
+        默认使用完整原文翻译，优先保留语境。翻译文本将发送至 MyMemory 公共服务，请勿用于敏感页面。
       </div>
     </div>
     <script src="popup.js"></script>

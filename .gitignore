@@ -2,7 +2,9 @@ data/raw/
 assets/compiled-dictionary.json
 dist/
 downloads/
-# Local product copy drafts
+# Local product mockups (not part of the extension release)
+demo-page.html
+showcase.html
 showcase-copy.md
 *.pyc
 __pycache__/
@@ -10,3 +12,8 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Local continuity records
+.continuity-keeper/
+PROGRESS.md
+CONTINUITY_TASKS.md

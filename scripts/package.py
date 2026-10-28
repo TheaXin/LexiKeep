@@ -9,7 +9,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 
 ROOT = Path(__file__).resolve().parent.parent
-INCLUDE = [ROOT / "manifest.json", ROOT / "assets" / "dictionary.json", ROOT / "src"]
+INCLUDE = [ROOT / "manifest.json", ROOT / "INSTALL.txt", ROOT / "PRIVACY.md", ROOT / "LICENSE", ROOT / "assets" / "dictionary.json", ROOT / "src"]
 
 
 def files() -> list[Path]:
@@ -22,7 +22,7 @@ def files() -> list[Path]:
 def main() -> None:
     manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
     version = manifest["version"]
-    output = ROOT / "dist" / f"liucitongdu-{version}.zip"
+    output = ROOT / "dist" / f"lexikeep-{version}.zip"
     output.parent.mkdir(exist_ok=True)
 
     with ZipFile(output, "w", ZIP_DEFLATED, compresslevel=9) as archive:

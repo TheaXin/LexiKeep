@@ -1,0 +1,43 @@
+name: Extension Release
+on:
+  push:
+    branches: [main]
+    paths:
+      - manifest.json
+      - .github/workflows/release.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: extension-release
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/check_project.py
+      - run: node scripts/test_translation.cjs
+      - run: python3 scripts/package.py
+      - name: Publish new extension version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(python3 -c 'import json; print(json.load(open("manifest.json"))["version"])')
+          if gh release view "v$version" >/dev/null 2>&1; then
+            echo "Release v$version already exists; preserving it."
+            exit 0
+          fi
+          cd dist
+          sha256sum "lexikeep-$version.zip" > SHA256SUMS.txt
+          gh release create "v$version" "lexikeep-$version.zip" SHA256SUMS.txt \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "LexiKeep $version — 浏览器扩展" --notes-file ../RELEASE_NOTES.md

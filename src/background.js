@@ -1,11 +1,12 @@
 const DEFAULT_SETTINGS = Object.freeze({
   enabledLists: ["starter"],
+  learningMode: false,
   maxNodes: 600,
   maxProtectedWordsPerNode: 2
 });
 
 const MAX_SEGMENTS = 600;
-const MAX_SEGMENT_LENGTH = 450;
+const MAX_SEGMENT_LENGTH = 20000;
 const MAX_CACHE_ENTRIES = 1000;
 const CONCURRENCY = 3;
 const translationCache = new Map();
@@ -22,6 +23,7 @@ function sanitizeSettings(value = {}) {
     : DEFAULT_SETTINGS.enabledLists;
   return {
     enabledLists: lists,
+    learningMode: value.learningMode === true,
     maxNodes: clampNumber(value.maxNodes, 50, 1200, DEFAULT_SETTINGS.maxNodes),
     maxProtectedWordsPerNode: clampNumber(
       value.maxProtectedWordsPerNode,
@@ -83,6 +85,38 @@ function decodeHtmlEntities(text) {
     .replaceAll("&amp;", "&");
 }
 
+// MyMemory limits each query by UTF-8 bytes, rather than JavaScript characters.
+function splitText(text, maxBytes = 480) {
+  const chunks = [];
+  let chunk = "";
+  const units = text.match(/[^.!?。！？]+[.!?。！？]*\s*|[.!?。！？]+\s*/gu) || [text];
+  for (const unit of units) {
+    if (new TextEncoder().encode(chunk + unit).length <= maxBytes) {
+      chunk += unit;
+      continue;
+    }
+    if (chunk) chunks.push(chunk);
+    chunk = "";
+    for (const part of unit.match(/\S+\s*|\s+/gu) || [unit]) {
+      if (new TextEncoder().encode(chunk + part).length <= maxBytes) {
+        chunk += part;
+      } else {
+        if (chunk) chunks.push(chunk);
+        chunk = "";
+        for (const char of part) {
+          if (new TextEncoder().encode(chunk + char).length > maxBytes) {
+            chunks.push(chunk);
+            chunk = "";
+          }
+          chunk += char;
+        }
+      }
+    }
+  }
+  if (chunk) chunks.push(chunk);
+  return chunks;
+}
+
 async function translateText(text, attempt = 0) {
   const trimmed = String(text || "").trim();
   if (!trimmed) {
@@ -90,6 +124,13 @@ async function translateText(text, attempt = 0) {
   }
   if (trimmed.length > MAX_SEGMENT_LENGTH) {
     throw new Error("Text segment is too long");
+  }
+
+  const chunks = splitText(trimmed);
+  if (chunks.length > 1) {
+    const translations = [];
+    for (const chunk of chunks) translations.push(await translateText(chunk));
+    return translations.join(" ");
   }
 
   const cached = readCached(trimmed);
@@ -101,7 +142,7 @@ async function translateText(text, attempt = 0) {
     const url = new URL("https://api.mymemory.translated.net/get");
     url.searchParams.set("q", trimmed);
     url.searchParams.set("langpair", "en|zh-CN");
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: AbortSignal.timeout(15000) });
     if (!response.ok) {
       throw new Error(`Translation service returned ${response.status}`);
     }
@@ -109,7 +150,10 @@ async function translateText(text, attempt = 0) {
     if (Number(payload?.responseStatus || 200) >= 400) {
       throw new Error(payload?.responseDetails || "Translation service rejected the request");
     }
-    const translated = decodeHtmlEntities(payload?.responseData?.translatedText || trimmed);
+    const translated = decodeHtmlEntities(payload?.responseData?.translatedText).trim();
+    if (!translated || translated === trimmed || !/[\u3400-\u9fff]/u.test(translated)) {
+      throw new Error("服务未返回有效中文译文");
+    }
     writeCache(trimmed, translated);
     return translated;
   } catch (error) {
@@ -123,9 +167,10 @@ async function translateText(text, attempt = 0) {
 
 async function translateSegments(items) {
   const source = Array.isArray(items)
-    ? items.slice(0, MAX_SEGMENTS).map((item) => String(item || "").slice(0, MAX_SEGMENT_LENGTH))
+    ? items.slice(0, MAX_SEGMENTS).map((item) => String(item || ""))
     : [];
   const results = new Array(source.length);
+  const failures = [];
   let cursor = 0;
 
   async function worker() {
@@ -136,18 +181,22 @@ async function translateSegments(items) {
       } catch (error) {
         console.warn("Translation failed:", error);
         results[index] = source[index];
+        failures.push(index);
       }
     }
   }
 
   await Promise.all(Array.from({ length: Math.min(CONCURRENCY, source.length) }, worker));
-  return results;
+  return { translated: results, failures };
 }
 
-chrome.runtime.onInstalled.addListener(async () => {
+chrome.runtime.onInstalled.addListener(async (details) => {
   const stored = await chrome.storage.sync.get(null);
   if (!Object.keys(stored).length) {
     await chrome.storage.sync.set(DEFAULT_SETTINGS);
+  }
+  if (details.reason === "install") {
+    await chrome.tabs.create({ url: chrome.runtime.getURL("src/welcome.html") });
   }
 });
 
@@ -163,7 +212,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
   if (type === "translate-segments" && sender.tab) {
     translateSegments(message.items)
-      .then((translated) => sendResponse({ translated }))
+      .then(sendResponse)
       .catch((error) => sendResponse({ error: error.message }));
     return true;
   }
